@@ -50,6 +50,7 @@ public class EmbeddableSet extends BaseEnversJPAFunctionalTestCase {
 	private final Component4 c4_2 = new Component4( "c42", "c42_value2", "c42_description" );
 	private final Component3 c3_1 = new Component3( "c31", c4_1, c4_2 );
 	private final Component3 c3_2 = new Component3( "c32", c4_1, c4_2 );
+	private final Component3 c3_3 = new Component3( "c33", c4_1, c4_2 );
 
 	@Override
 	protected Class<?>[] getAnnotatedClasses() {
@@ -66,6 +67,7 @@ public class EmbeddableSet extends BaseEnversJPAFunctionalTestCase {
 		// Revision 1 (ese1: initially 1 element in both collections)
 		em.getTransaction().begin();
 		ese1.getComponentSet().add( c3_1 );
+		ese1.getComponentSet().add( c3_3 );
 		em.persist( ese1 );
 		em.getTransaction().commit();
 
@@ -109,8 +111,8 @@ public class EmbeddableSet extends BaseEnversJPAFunctionalTestCase {
 		EmbeddableSetEntity rev2 = getAuditReader().find( EmbeddableSetEntity.class, ese1_id, 2 );
 		EmbeddableSetEntity rev3 = getAuditReader().find( EmbeddableSetEntity.class, ese1_id, 3 );
 
-		assertEquals( Collections.singleton( c3_1 ), rev1.getComponentSet() );
-		assertEquals( TestTools.makeSet( c3_1, c3_2 ), rev2.getComponentSet() );
-		assertEquals( TestTools.makeSet( c3_1 ), rev3.getComponentSet() );
+		assertEquals( TestTools.makeSet( c3_1, c3_3 ), rev1.getComponentSet() );
+		assertEquals( TestTools.makeSet( c3_1, c3_2, c3_3 ), rev2.getComponentSet() );
+		assertEquals( TestTools.makeSet( c3_1, c3_3 ), rev3.getComponentSet() );
 	}
 }
